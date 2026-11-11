@@ -28,10 +28,15 @@ The script also checks every example stack for overlaps between parts, button bo
 | `module_top` + `lid_ky023` | pitch 30 + 3 plate | Bench-test top for a KY-023: ring plus screw-on lid with Ø24 opening, 2 LEDs, 2 standoffs |
 | `module_btn1` | 50 x 50, pitch 36 | 1 button, front face, centre 14.5 above the seam |
 | `module_btn2` | 50 x 50, pitch 64 | 2 buttons, front at 14.5 and back at 42.5 |
-| `module_btn3` | 50 x 50, pitch 58 | 3 buttons: front lower-right (x +9.5, z 12), front upper-left (x -9.5, z 32), back upper-right (x +9.5, z 32), x seen from the front |
+| `module_btn3` | 50 x 50, pitch 58 | 3 buttons: front lower-right (x +9.5, z 12), front upper-left (x -9.5, z 32), back behind the lower one (x +9.5, z 32), x seen from the front |
+| `module_btn3_top` | 50 x 50, pitch 76 | 3 buttons: front diagonal (x ±7.5, z 12 / 32), back centred at z 50 |
+| `module_btn2_diag` | 50 x 50, pitch 58 | 2 buttons, front diagonal: lower-right (x +7.5, z 12), upper-left (x -7.5, z 32) |
+| `module_btn2_diag_rev` | 50 x 50, pitch 58 | Mirror of `module_btn2_diag`: lower-left, upper-right |
+
+A front and a back button need at least 19 mm between centres (side-to-side and height combined), since both bodies reach 39 mm into the 44 mm interior. That is why `module_btn3` keeps x ±9.5 and a centred back button needs the taller `module_btn3_top`.
 | `module_bottom` | 50 x 50 x 90 | ESP32 holder, buzzer pocket, cable slot, zip-tie anchor |
 
-"Pitch" is the height a module adds to the stack. Example stacks with 3 buttons each: bottom + btn3 + SMC30B top = 198 mm, bottom + btn1 + btn2 + SMC30B top = 240 mm.
+"Pitch" is the height a module adds to the stack. Example stacks with 3 buttons each: bottom + btn3 + SMC30B top = 198 mm, bottom + btn3_top + SMC30B top = 216 mm, bottom + btn1 + btn2_diag + SMC30B top = 234 mm.
 
 ## Key dimensions
 | Item | Value | Source |
