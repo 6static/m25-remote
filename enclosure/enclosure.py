@@ -85,7 +85,8 @@ SMC_TAB_R = 19.5
 SMC_TAB_H = 8.0              # not dimensioned, estimated from the side view
 H_TOP_SMC = 50.0             # plate + flange + body + room for the cable
 TOP_PLATE_T = 3.0
-SMC_LEDS = [(-8.0, -21.3), (8.0, -21.3)]   # in front of the flange, LED pocket cuts into the wall
+# Front corners, as far from the boot as the flange allows; LED pocket cuts into the wall.
+SMC_LEDS = [(-19.0, -21.3), (19.0, -21.3)]
 
 # ---------------------------------------------------------------- bottom module
 FLOOR_T = 3.0
