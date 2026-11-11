@@ -25,6 +25,7 @@ The script also checks every example stack for overlaps between parts, button bo
 | Part | Outer size (mm) | Contents |
 |---|---|---|
 | `module_top_smc30` | 50 x 50, pitch 50 | Top with fixed plate for the SMC30B joystick, 2 LEDs (3 mm) in the front corners, 28.6 from the stick axis |
+| `module_top_smc30_btn` | 50 x 50, pitch 71.5 | Same top with 1 button on the front at z 14.5, below the joystick body (the body fills the interior, so the button can't sit beside it) |
 | `module_top` + `lid_ky023` | pitch 30 + 3 plate | Bench-test top for a KY-023: ring plus screw-on lid with Ø24 opening, 2 LEDs, 2 standoffs |
 | `module_btn1` | 50 x 50, pitch 36 | 1 button, front face, centre 14.5 above the seam |
 | `module_btn2` | 50 x 50, pitch 64 | 2 buttons, front at 14.5 and back at 42.5 |

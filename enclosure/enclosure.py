@@ -57,6 +57,7 @@ BTN3 = [(BTN3_X, DIAG_Z[0], "front"), (-BTN3_X, DIAG_Z[1], "front"), (BTN3_X, DI
 BTN3_TOP = [(DIAG_X, DIAG_Z[0], "front"), (-DIAG_X, DIAG_Z[1], "front"), (0.0, BTN_TOP_Z, "back")]
 BTN2_DIAG = [(DIAG_X, DIAG_Z[0], "front"), (-DIAG_X, DIAG_Z[1], "front")]
 BTN2_DIAG_REV = [(-x, z, f) for x, z, f in BTN2_DIAG]
+TOP_BTN = [(0.0, BTN_Z0, "front")]   # joystick top with one button below the stick
 
 # ---------------------------------------------------------------- module heights (stack pitch)
 H_TOP = 30.0
@@ -93,6 +94,9 @@ SMC_TAB_R = 19.5
 SMC_TAB_H = 8.0              # not dimensioned, estimated from the side view
 H_TOP_SMC = 50.0             # plate + flange + body + room for the cable
 TOP_PLATE_T = 3.0
+# Joystick body fills the interior, so a button has to sit below it.
+SMC_BTN_GAP = 4.0            # button nut to joystick body, for the connector cable
+H_TOP_SMC_BTN = BTN_Z0 + BTN_NUT_D / 2 + SMC_BTN_GAP + SMC_BODY_LEN + SMC_FLANGE_T + TOP_PLATE_T
 # Front corners, as far from the boot as the flange allows; LED pocket cuts into the wall.
 SMC_LEDS = [(-19.0, -21.3), (19.0, -21.3)]
 
@@ -269,9 +273,8 @@ def lid():
     return body
 
 
-def module_top_smc30():
+def module_top_smc30(H=H_TOP_SMC, layout=()):
     """Top with integral plate for the SMC30B. Assembly coordinates; prints upside down."""
-    H = H_TOP_SMC
     body = rbox(W, H, R)
     body = joint_bottom(body)
     body = body.cut(rbox(IN, H - TOP_PLATE_T + L + 1, R_IN, -L - 1))
@@ -284,12 +287,14 @@ def module_top_smc30():
     for x, y in SMC_LEDS:
         body = body.cut(cq.Workplane("XY").center(x, y).circle(LED_HOLE_D / 2).extrude(TOP_PLATE_T + 2).translate((0, 0, zp - 1)))
         body = body.cut(cq.Workplane("XY").center(x, y).circle(LED_FLANGE_D / 2).extrude(LED_FLANGE_DEPTH + 6).translate((0, 0, zp - 6)))
+    for x, z, face in layout:
+        body = body.cut(button_hole(z, face, x))
     return body
 
 
-def smc30_dummy():
+def smc30_dummy(H=H_TOP_SMC):
     """Joystick envelope below the plate, used only for the clearance check. Connector faces back."""
-    zp = H_TOP_SMC - TOP_PLATE_T
+    zp = H - TOP_PLATE_T
     flange = cq.Workplane("XY").box(SMC_FLANGE, SMC_FLANGE, SMC_FLANGE_T).translate((0, 0, zp - SMC_FLANGE_T / 2))
     z_body = zp - SMC_FLANGE_T - SMC_BODY_LEN
     body = cq.Workplane("XY").circle(SMC_BODY_D / 2).extrude(SMC_BODY_LEN).translate((0, 0, z_body))
@@ -363,6 +368,7 @@ def main():
         "lid_ky023": lid(),
         "module_top": module_top(),
         "module_top_smc30": module_top_smc30(),
+        "module_top_smc30_btn": module_top_smc30(H_TOP_SMC_BTN, TOP_BTN),
         "module_btn1": module_btn1(),
         "module_btn2": module_btn2(),
         "module_bottom": module_bottom(),
@@ -379,10 +385,11 @@ def main():
         "module_btn1": [(0.0, BTN_Z0, "front")],
         "module_btn2": [(0.0, BTN_Z0, "front"), (0.0, BTN_Z0 + BTN_PITCH, "back")],
         **{name: layout for name, (h, layout) in layouts.items()},
+        "module_top_smc30_btn": TOP_BTN,
     }
 
     # print orientation: lid and SMC30 top face down, everything else as assembled
-    flipped = ("lid_ky023", "module_top_smc30")
+    flipped = ("lid_ky023", "module_top_smc30", "module_top_smc30_btn")
     for name, part in parts.items():
         printable = part.rotate((0, 0, 0), (1, 0, 0), 180) if name in flipped else part
         bb = printable.val().BoundingBox()
@@ -407,7 +414,7 @@ def main():
 
     bad = False
     heights = {"module_bottom": H_BOTTOM, "module_btn1": H_BTN1, "module_btn2": H_BTN2,
-               "module_top": H_TOP, "module_top_smc30": H_TOP_SMC,
+               "module_top": H_TOP, "module_top_smc30": H_TOP_SMC, "module_top_smc30_btn": H_TOP_SMC_BTN,
                **{name: h for name, (h, layout) in layouts.items()}}
     stacks = {
         "example": ["module_bottom", "module_btn1", "module_btn3", "module_top_smc30"],
@@ -415,6 +422,7 @@ def main():
         "btn3_top": ["module_bottom", "module_btn3_top", "module_top_smc30"],
         "diag": ["module_bottom", "module_btn1", "module_btn2_diag", "module_top_smc30"],
         "diag_rev": ["module_bottom", "module_btn2_diag_rev", "module_btn1", "module_top_smc30"],
+        "top_btn": ["module_bottom", "module_btn2_diag", "module_top_smc30_btn"],
         "ky023": ["module_bottom", "module_btn3", "module_top"],
     }
     stack_shapes = {}
@@ -430,8 +438,8 @@ def main():
                 d = button_dummy(bz, face, bx).translate((0, 0, z))
                 asm.add(d, name=f"{name}_button{k}", color=cq.Color("red"))
                 placed.append((f"{name}_button{k}", d))
-            if name == "module_top_smc30":
-                d = smc30_dummy().translate((0, 0, z))
+            if name.startswith("module_top_smc30"):
+                d = smc30_dummy(heights[name]).translate((0, 0, z))
                 asm.add(d, name="smc30_envelope", color=cq.Color("red"))
                 placed.append(("smc30_envelope", d))
             z += heights[name]
