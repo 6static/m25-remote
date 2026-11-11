@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M25 remote enclosure</title>
+<meta name="description" content="Stackable 50 x 50 mm printed modules for the M25 wheelchair remote.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-text">
+    <h1>M25 remote enclosure</h1>
+    <p>Stackable 50 x 50 mm modules for trying out button layouts. Every module shares the same joint, so you stack them in any order and turn each one in 90° steps.</p>
+    <p class="hint">Scroll to print each part from the bed up. Hit <em>Rotate</em> to turn it in 3D.</p>
+  </div>
+  <div class="bed bed-hero" data-print="load">
+    <img src="assets/parts/preview_stack_example.svg" alt="Full stack: bottom, 1-button, 3-button and joystick top modules" width="500" height="700">
+    <span class="nozzle" aria-hidden="true"></span>
+  </div>
+</header>
+
+<main>
+  <section class="parts" id="parts" aria-label="Parts"></section>
+
+  <section class="stacks" aria-labelledby="stacks-h">
+    <div class="stacks-head">
+      <h2 id="stacks-h">Example stacks</h2>
+      <p>Each one checked for overlaps between parts, button bodies, the joystick and the ESP32. In 3D the button bodies and joystick show in red, the ESP32 envelope in green.</p>
+    </div>
+    <div class="stack-grid" id="stacks"></div>
+  </section>
+</main>
+
+<footer>
+  <p>Generated with CadQuery from <code>enclosure/enclosure.py</code>. PETG, 0.2 mm layers, no supports.</p>
+</footer>
+
+<template id="part-tpl">
+  <article class="part">
+    <div class="part-sticky">
+      <div class="part-text">
+        <h2></h2>
+        <dl class="dims"></dl>
+        <p class="desc"></p>
+      </div>
+      <div class="bed" data-print="scroll">
+        <img alt="" width="400" height="400">
+        <span class="nozzle" aria-hidden="true"></span>
+        <button class="rotate" type="button" aria-pressed="false">Rotate</button>
+      </div>
+    </div>
+  </article>
+</template>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
