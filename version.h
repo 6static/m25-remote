@@ -10,7 +10,7 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#define FW_VERSION "v0.1.0"
+#define FW_VERSION "v0.2.0"
 
 #ifndef FW_GIT_HASH
 #define FW_GIT_HASH "unknown"
