@@ -47,16 +47,24 @@ BTN_BODY_LEN = 39.0 # 31 body + bent wires
 BTN_NUT_D = 22.0
 BTN_NUT_T = 4.0
 
-# 3-button module: two on the front on a diagonal, one on the back.
-# (x, z, face); x is the global X position, seen from the front.
-BTN3_X = 9.5
-BTN3 = [(BTN3_X, 12.0, "front"), (-BTN3_X, 32.0, "front"), (BTN3_X, 32.0, "back")]
+# Diagonal layouts: (x, z, face); x is the global X position, seen from the front.
+# A front and a back button overlap in depth, so they need >= 19 mm between centres in x/z.
+DIAG_Z = (12.0, 32.0)
+DIAG_X = 7.5        # front pair, pulled in from the edge
+BTN3_X = 9.5        # back button behind the lower one needs 19 mm to the upper front one
+BTN_TOP_Z = 50.0    # centred back button above the front pair
+BTN3 = [(BTN3_X, DIAG_Z[0], "front"), (-BTN3_X, DIAG_Z[1], "front"), (BTN3_X, DIAG_Z[1], "back")]
+BTN3_TOP = [(DIAG_X, DIAG_Z[0], "front"), (-DIAG_X, DIAG_Z[1], "front"), (0.0, BTN_TOP_Z, "back")]
+BTN2_DIAG = [(DIAG_X, DIAG_Z[0], "front"), (-DIAG_X, DIAG_Z[1], "front")]
+BTN2_DIAG_REV = [(-x, z, f) for x, z, f in BTN2_DIAG]
 
 # ---------------------------------------------------------------- module heights (stack pitch)
 H_TOP = 30.0
 H_BTN1 = 36.0
 H_BTN2 = 64.0
 H_BTN3 = 58.0       # upper buttons must stay below the insert bosses of the joint above
+H_BTN3_TOP = BTN_TOP_Z + (H_BTN3 - DIAG_Z[1])
+H_BTN2_DIAG = H_BTN3
 H_BOTTOM = 90.0
 
 # ---------------------------------------------------------------- KY-023 lid (bench tests)
@@ -235,9 +243,9 @@ def module_btn2():
     )
 
 
-def module_btn3():
-    body = shell(H_BTN3)
-    for x, z, face in BTN3:
+def module_buttons(h, layout):
+    body = shell(h)
+    for x, z, face in layout:
         body = body.cut(button_hole(z, face, x))
     return body
 
@@ -357,13 +365,20 @@ def main():
         "module_top_smc30": module_top_smc30(),
         "module_btn1": module_btn1(),
         "module_btn2": module_btn2(),
-        "module_btn3": module_btn3(),
         "module_bottom": module_bottom(),
     }
+    layouts = {
+        "module_btn3": (H_BTN3, BTN3),
+        "module_btn3_top": (H_BTN3_TOP, BTN3_TOP),
+        "module_btn2_diag": (H_BTN2_DIAG, BTN2_DIAG),
+        "module_btn2_diag_rev": (H_BTN2_DIAG, BTN2_DIAG_REV),
+    }
+    for name, (h, layout) in layouts.items():
+        parts[name] = module_buttons(h, layout)
     buttons = {
         "module_btn1": [(0.0, BTN_Z0, "front")],
         "module_btn2": [(0.0, BTN_Z0, "front"), (0.0, BTN_Z0 + BTN_PITCH, "back")],
-        "module_btn3": BTN3,
+        **{name: layout for name, (h, layout) in layouts.items()},
     }
 
     # print orientation: lid and SMC30 top face down, everything else as assembled
@@ -392,10 +407,14 @@ def main():
 
     bad = False
     heights = {"module_bottom": H_BOTTOM, "module_btn1": H_BTN1, "module_btn2": H_BTN2,
-               "module_btn3": H_BTN3, "module_top": H_TOP, "module_top_smc30": H_TOP_SMC}
+               "module_top": H_TOP, "module_top_smc30": H_TOP_SMC,
+               **{name: h for name, (h, layout) in layouts.items()}}
     stacks = {
-        "example": ["module_bottom", "module_btn1", "module_btn2", "module_top_smc30"],
+        "example": ["module_bottom", "module_btn1", "module_btn3", "module_top_smc30"],
         "btn3": ["module_bottom", "module_btn3", "module_top_smc30"],
+        "btn3_top": ["module_bottom", "module_btn3_top", "module_top_smc30"],
+        "diag": ["module_bottom", "module_btn1", "module_btn2_diag", "module_top_smc30"],
+        "diag_rev": ["module_bottom", "module_btn2_diag_rev", "module_btn1", "module_top_smc30"],
         "ky023": ["module_bottom", "module_btn3", "module_top"],
     }
     stack_shapes = {}
