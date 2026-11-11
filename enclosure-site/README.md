@@ -17,4 +17,6 @@ The 3D models load with `fetch`, so opening `index.html` straight from disk show
 ## GitHub Pages
 `.github/workflows/enclosure-site.yml` builds and deploys the site on every push to `main` that touches `enclosure/` or `enclosure-site/`. Run it by hand with **regen** ticked to rebuild the enclosure in CI too.
 
+The page loads nothing from other hosts: fonts (Barlow, OFL) and three.js r160 (MIT) are vendored in `vendor/`. `CNAME` holds the custom domain, `impressum.html` and `datenschutz.html` cover the German legal pages.
+
 Part names and descriptions live in `app.js` (`PARTS`, `STACKS`).

@@ -1,3 +1,35 @@
+/* self-hosted so the page makes no third-party requests */
+@font-face {
+  font-family: "Barlow";
+  font-weight: 400;
+  font-display: swap;
+  src: url("vendor/fonts/barlow-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow";
+  font-weight: 500;
+  font-display: swap;
+  src: url("vendor/fonts/barlow-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  font-weight: 500;
+  font-display: swap;
+  src: url("vendor/fonts/barlow-condensed-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  font-weight: 600;
+  font-display: swap;
+  src: url("vendor/fonts/barlow-condensed-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  font-weight: 700;
+  font-display: swap;
+  src: url("vendor/fonts/barlow-condensed-latin-700-normal.woff2") format("woff2");
+}
+
 :root {
   --paper: #eef0ec;
   --ink: #1e2528;
@@ -226,3 +258,16 @@ footer {
   .dims dd { font-size: 1.8rem; }
   .part .desc { font-size: 0.95rem; }
 }
+
+.legal { display: flex; flex-wrap: wrap; gap: 0.4rem 1.6rem; }
+.legal a, .legal-page a { color: var(--petg); }
+.legal a:focus-visible, .legal-page a:focus-visible { outline: 3px solid var(--hot); outline-offset: 2px; }
+
+.legal-page {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: clamp(32px, 8vw, 96px) 16px;
+}
+.legal-page h1 { font-size: clamp(2.4rem, 7vw, 4rem); }
+.legal-page h2 { font-size: 1.5rem; margin-top: 1.6em; }
+.back-link { display: inline-block; margin-bottom: 2rem; }

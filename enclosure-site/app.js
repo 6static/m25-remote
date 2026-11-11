@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { STLLoader } from "three/addons/loaders/STLLoader.js";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { STLLoader } from "./vendor/three/STLLoader.js";
+import { OrbitControls } from "./vendor/three/OrbitControls.js";
 
 // ordered bed-up: the order you'd stack them
 const PARTS = [
