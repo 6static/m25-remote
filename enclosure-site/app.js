@@ -14,8 +14,8 @@ const PARTS = [
     desc: "Both on the front: lower right and upper left, 7.5 mm off centre." },
   { id: "module_btn2_diag_rev", name: "Two buttons, mirrored", size: "50 x 50", pitch: 58,
     desc: "The diagonal module flipped: lower left and upper right." },
-  { id: "module_btn3", name: "Three buttons", size: "50 x 50", pitch: 58,
-    desc: "Front lower right, front upper left, and one on the back behind the lower button. Front and back need 19 mm between centres, which is why x stays at ±9.5." },
+  { id: "module_btn3", name: "Three buttons", size: "50 x 50", pitch: 70,
+    desc: "Front lower right, front upper left, and one on the back behind the lower button. Buttons stay at x ±7.5 so the head sits on the flat face, so the back button moves up to keep 19 mm to the upper front one." },
   { id: "module_btn3_top", name: "Three buttons, tall", size: "50 x 50", pitch: 76,
     desc: "Front diagonal pair plus a back button centred at 50 mm. Taller, so the back button can sit in the middle." },
   { id: "module_top", name: "KY-023 top", size: "50 x 50", pitch: 30,
@@ -29,10 +29,10 @@ const PARTS = [
 ];
 
 const STACKS = [
-  { id: "btn3", title: "Three buttons", height: 198, parts: "Bottom, three buttons, joystick top" },
+  { id: "btn3", title: "Three buttons", height: 210, parts: "Bottom, three buttons, joystick top" },
   { id: "btn3_top", title: "Three buttons, tall", height: 216, parts: "Bottom, tall three-button, joystick top" },
   { id: "top_btn", title: "Button under the stick", height: 219.5, parts: "Bottom, diagonal pair, joystick top with button" },
-  { id: "example", title: "Four buttons", height: 234, parts: "Bottom, one button, three buttons, joystick top" },
+  { id: "example", title: "Four buttons", height: 246, parts: "Bottom, one button, three buttons, joystick top" },
   { id: "diag", title: "Diagonal", height: 234, parts: "Bottom, one button, diagonal pair, joystick top" },
   { id: "diag_rev", title: "Diagonal, mirrored", height: 234, parts: "Bottom, mirrored pair, one button, joystick top" },
   { id: "ky023", title: "KY-023 bench", height: 181, parts: "Bottom, three buttons, KY-023 top and lid" },

@@ -30,7 +30,7 @@ FUNNEL = 1.6        # 45 deg chamfer above the skirt, keeps the part support-fre
 # Horizontal M3 screws, one per face, pinwheel pattern so 90 deg turns line up.
 SCREW_OFF = 16.0    # offset along the face from its centre
 SCREW_Z = L / 2     # below the joint line
-INSERT_D = 4.0      # hole for M3 x 5.7 heat-set insert
+INSERT_D = 4.2      # M3 x 5 x Ø5 knurled insert
 INSERT_DEPTH = 6.0
 SCREW_CLEAR_D = 3.4
 BOSS_W = 9.0
@@ -50,10 +50,11 @@ BTN_NUT_T = 4.0
 # Diagonal layouts: (x, z, face); x is the global X position, seen from the front.
 # A front and a back button overlap in depth, so they need >= 19 mm between centres in x/z.
 DIAG_Z = (12.0, 32.0)
-DIAG_X = 7.5        # front pair, pulled in from the edge
-BTN3_X = 9.5        # back button behind the lower one needs 19 mm to the upper front one
+DIAG_X = 7.5        # head edge at 18.4, inside the flat face (W/2 - R = 19)
+BTN3_BACK_Z = 44.0  # back button behind the lower one, 19 mm from the upper front one
 BTN_TOP_Z = 50.0    # centred back button above the front pair
-BTN3 = [(BTN3_X, DIAG_Z[0], "front"), (-BTN3_X, DIAG_Z[1], "front"), (BTN3_X, DIAG_Z[1], "back")]
+BTN_TOP_CLEAR = 26.0  # top button centre to module top, keeps the nut below the insert bosses
+BTN3 = [(DIAG_X, DIAG_Z[0], "front"), (-DIAG_X, DIAG_Z[1], "front"), (DIAG_X, BTN3_BACK_Z, "back")]
 BTN3_TOP = [(DIAG_X, DIAG_Z[0], "front"), (-DIAG_X, DIAG_Z[1], "front"), (0.0, BTN_TOP_Z, "back")]
 BTN2_DIAG = [(DIAG_X, DIAG_Z[0], "front"), (-DIAG_X, DIAG_Z[1], "front")]
 BTN2_DIAG_REV = [(-x, z, f) for x, z, f in BTN2_DIAG]
@@ -63,9 +64,9 @@ TOP_BTN = [(0.0, BTN_Z0, "front")]   # joystick top with one button below the st
 H_TOP = 30.0
 H_BTN1 = 36.0
 H_BTN2 = 64.0
-H_BTN3 = 58.0       # upper buttons must stay below the insert bosses of the joint above
-H_BTN3_TOP = BTN_TOP_Z + (H_BTN3 - DIAG_Z[1])
-H_BTN2_DIAG = H_BTN3
+H_BTN3 = BTN3_BACK_Z + BTN_TOP_CLEAR
+H_BTN3_TOP = BTN_TOP_Z + BTN_TOP_CLEAR
+H_BTN2_DIAG = DIAG_Z[1] + BTN_TOP_CLEAR
 H_BOTTOM = 90.0
 
 # ---------------------------------------------------------------- KY-023 lid (bench tests)
@@ -380,6 +381,8 @@ def main():
         "module_btn2_diag_rev": (H_BTN2_DIAG, BTN2_DIAG_REV),
     }
     for name, (h, layout) in layouts.items():
+        for x, z, face in layout:
+            assert abs(x) + BTN_HEAD_D / 2 <= W / 2 - R, f"{name}: button head at x {x} overhangs the corner radius"
         parts[name] = module_buttons(h, layout)
     buttons = {
         "module_btn1": [(0.0, BTN_Z0, "front")],
