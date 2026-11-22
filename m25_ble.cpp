@@ -1471,7 +1471,9 @@ void _notifyCallback(BLERemoteCharacteristic* pChar, uint8_t* pData, size_t leng
 void M25DisconnectCallback::onConnect(BLEClient*) {}
 
 void M25DisconnectCallback::onDisconnect(BLEClient*) {
-    if (_bleTxMutex) xSemaphoreTake(_bleTxMutex, pdMS_TO_TICKS(200));
+    // Runs on the BT task; a write in flight can hold the mutex past the timeout,
+    // and giving a mutex this task doesn't own trips a FreeRTOS assert.
+    const bool locked = _bleTxMutex && xSemaphoreTake(_bleTxMutex, pdMS_TO_TICKS(200)) == pdTRUE;
 
     _wheels[wheelIdx].connected = false;
     _wheels[wheelIdx].rxChar = nullptr;
@@ -1485,7 +1487,7 @@ void M25DisconnectCallback::onDisconnect(BLEClient*) {
     _wheels[wheelIdx].txFailStreak = 0;
     _wheels[wheelIdx].lastTxFailMs = 0;
 
-    if (_bleTxMutex) xSemaphoreGive(_bleTxMutex);
+    if (locked) xSemaphoreGive(_bleTxMutex);
 
     // Only print message for active wheels (respect WHEEL_MODE)
     if (_wheelActive(wheelIdx)) {
