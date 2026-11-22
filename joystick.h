@@ -173,7 +173,11 @@ inline JoystickRaw joystickReadPins() {
 // Logical axes: x = left/right, y = forward/back (swap applied, invert is applied in normalize)
 inline JoystickRaw joystickReadRaw() {
     JoystickRaw p = joystickReadPins();
-    return _jsSwapXY ? JoystickRaw{ p.y, p.x } : p;
+    JoystickRaw r = _jsSwapXY ? JoystickRaw{ p.y, p.x } : p;
+#ifdef JOYSTICK_FWD_BWD_ONLY
+    r.x = _jsXCenter;
+#endif
+    return r;
 }
 
 // Logical centers expressed per physical pin, for cal which works on pins
@@ -266,6 +270,10 @@ inline const char* joystickDirectionLabel(float x, float y) {
 // Call after joystickInit(); values outside the valid ADC range are ignored.
 // ---------------------------------------------------------------------------
 inline bool joystickApplyFullRangeCalibration(int xMin, int xMax, int yMin, int yMax) {
+#ifdef JOYSTICK_FWD_BWD_ONLY
+    // Dead axis measured no center; take the stored range midpoint instead
+    _jsXCenter = (xMin + xMax) / 2;
+#endif
     // Sanity: each range must contain the center with usable travel on both sides.
     bool xOk = (xMin < _jsXCenter - JOYSTICK_MIN_HALF_SPAN) && (xMax > _jsXCenter + JOYSTICK_MIN_HALF_SPAN);
     bool yOk = (yMin < _jsYCenter - JOYSTICK_MIN_HALF_SPAN) && (yMax > _jsYCenter + JOYSTICK_MIN_HALF_SPAN);
@@ -350,6 +358,9 @@ inline bool joystickRecalibrate() {
     }
     JoystickRaw sampled = { (int)(sumX / calSamples), (int)(sumY / calSamples) };
     if (_jsSwapXY) sampled = { sampled.y, sampled.x };
+#ifdef JOYSTICK_FWD_BWD_ONLY
+    sampled.x = joystickExpectedCenterX();
+#endif
     if (!joystickRawNearExpectedCenter(sampled)) {
         _jsXCenter = joystickExpectedCenterX();
         _jsYCenter = joystickExpectedCenterY();

@@ -110,6 +110,14 @@
 // deadzone so the system boots through the safety check without ADC noise.
 // #define NO_JOYSTICK
 
+// TEMP: left/right input is dead (reads 0). Pins it to center so the stored
+// cal stays valid and the stick drives forward/backward only.
+#define JOYSTICK_FWD_BWD_ONLY
+
+#ifdef JOYSTICK_FWD_BWD_ONLY
+#warning "JOYSTICK_FWD_BWD_ONLY: left/right axis ignored, no steering. Temp test build."
+#endif
+
 // ---------------------------------------------------------------------------
 // Digital Inputs - active LOW, internal pull-up enabled
 // ---------------------------------------------------------------------------
